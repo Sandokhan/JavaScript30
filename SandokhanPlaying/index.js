@@ -1,14 +1,41 @@
-document.querySelectorAll('[data-key]').forEach(item => {
-    item.addEventListener('click', () => {
-        console.log(item.getAttribute('data-key'))
-    })
-})
+const calculator = document.querySelector('.calculator');
+const keys = document.querySelector('.calculator__keys');
+const display = document.querySelector('.calculator__display');
+const previousKeyType = calculator.dataset.previousKeyType
 
-
-function takeValues(e) {
-    const key = document.querySelector(`div[data-key="${e.keyCode}"]`);
-    if (!key) return;
-    key.classList.add('playing');
-}
-const keys = Array.from(document.querySelectorAll('.key'));
-window.addEventListener('keydown', takeValues);
+keys.addEventListener('click', e => {
+    if (e.target.matches('button')) {
+        const key = e.target;
+        const action = key.dataset.action;
+        const keyContent = key.textContent;
+        const displayedNum = display.textContent;
+        if (!action){
+            if (displayedNum === '0' || previousKeyType === 'operator') {
+                display.textContent = keyContent
+              } else {
+                display.textContent = displayedNum + keyContent
+              }
+        }
+        if (
+            action === 'add' ||
+            action === 'subtract' ||
+            action === 'multiply' ||
+            action === 'divide'
+          ) {
+            key.classList.add('is-depressed')
+            calculator.dataset.previousKeyType = 'operator'
+          }
+          if (action === 'decimal') {
+            display.textContent = displayedNum + '.'
+          }
+          
+          if (action === 'clear') {
+            console.log('clear key!')
+          }
+          
+          if (action === 'calculate') {
+            console.log('equal key!')
+          }
+          Array.from(key.parentNode.children).forEach(k => k.classList.remove('is-depressed'))
+    }
+});
